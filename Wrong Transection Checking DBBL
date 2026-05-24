@@ -1,45 +1,53 @@
 
 
-#### First Check  Transection Java DBBL Transection Checking Statement ####
+
+
+--#### First Check  Transection Java DBBL Transection Checking Statement ####
 
 "C:\Java\jdk1.8.0_151\bin\java" -jar D:\CRP_MIRPUR\BANK_INT\000599991020000_ecom_java8_real\ecomm_merchant.jar D:\CRP_MIRPUR\BANK_INT\000599991020000_ecom_java8_real\merchant.properties -c EATwAl7yQQ597OIcBQiRoXgIFQA= 144.48.119.59
 
 
-#### Second Check  Transection Details From Database ####
+--#### Second Check  Transection Details From Database ####
 -----------------------------------------------------------
 -- OAP.26.005192 | EATwAl7yQQ597OIcBQiRoXgIFQA=
 
-SELECT PAT_ID, PAT_NAME, PAT_CODE, PAT_PH_ID
+--280040	IBRAHIM MURSHED	25.02.016660	279947
+
+SELECT PAT_ID, PAT_NAME, PAT_CODE, PAT_PH_ID, PASSWORD
 FROM PATIENT_INFO
-WHERE PAT_CODE = '25.02.031608'
+WHERE PAT_CODE = '25.02.016660'
 
 SELECT *
 FROM ONLINE_APP_PAYMENT_MST
-WHERE OAPM_PH_ID = 294903
+WHERE OAPM_PH_ID = 279947
 ORDER BY OAPM_DATE DESC
 
 SELECT *
 FROM ONLINE_APP_PAYMENT_DTL
-WHERE OAPD_OAPM_ID = 52493
+WHERE OAPD_OAPM_ID = 49719
 
 SELECT *
 FROM ONLINE_APP_PAY_TRANSACTION
-WHERE OAPT_OAPM_ID = 52493
+WHERE OAPT_OAPM_ID = 49719
+
+SELECT *
+FROM ONLINE_APP_PAY_TRANSACTION
+WHERE OAPT_TRANSACTION_ID = 'hU9SLpPb6gVMOMn1J0tM8v9XEz0='
 
 SELECT *
 FROM PAYMENT_RECEIVE_MST
-WHERE PRM_PH_ID =294903
-AND PRM_OAPM_ID = 52493
+WHERE PRM_PH_ID =279947
+AND PRM_OAPM_ID = 49719
 
 SELECT *
 FROM PAYMENT_RECEIVE_DTL
-WHERE PRD_PRM_ID =
+WHERE PRD_PRM_ID = 0
 
 
-#### 3rd Check Transection is already taken or not from OFFLINE ####
+--#### 3rd Check Transection is already taken or not from OFFLINE ####
 ---------------------------------------------------------------------------
 
-========================================START=======================================================
+--========================================START=======================================================
 SELECT OAPD_ID,
        OAPD_OAPM_ID,
        OAPD_PFN_ID,
@@ -63,7 +71,7 @@ SELECT OAPD_ID,
        OAPM_INSERT_PRM_ID
 FROM ONLINE_APP_PAYMENT_DTL, ONLINE_APP_PAYMENT_MST
 WHERE OAPD_OAPM_ID = OAPM_ID
-AND OAPD_OAPM_ID = 49719  
+AND OAPD_OAPM_ID = 49719;  -- adm_id = 3910 3911 am_id = 433294 433318
 
 SELECT APPOINTMENT_SCHEDULE.* ,--COUNT (NVL (AS_TS_ID, 0))
 APPOINTMENT_DTL.*,
@@ -83,13 +91,21 @@ AND APPOINTMENT_SCHEDULE.AS_AD_ID =
     APPOINTMENT_DTL.AD_ID
 AND TO_CHAR (APPOINTMENT_DATE_MST.ADM_DATE,'DD/MM/RR') =  TO_CHAR ( to_date('10/03/26', 'DD/MM/RR') , 'DD/MM/RR')
 AND NVL (APPOINTMENT_DTL.AD_CANCEL, 0) = 0
-AND APPOINTMENT_SCHEDULE.AS_TS_ID = 164--170
+AND APPOINTMENT_SCHEDULE.AS_TS_ID = 164;--170
 
-======================================END=========================================================
+
+SELECT PAT_ID, PAT_NAME, PAT_CODE, PAT_PH_ID, PASSWORD
+FROM  patient_info --PATIENT_HISTORY --patient_info
+--WHERE PH_ID = 285864 
+WHERE PAT_ID = 2921382;
+--WHERE PAT_CODE = '25.02.016660'
+
+
+--======================================END=========================================================
 
 select *
 from APPOINTMENT_SCHEDULE
-where AS_AD_ID = 2990636 --2990636 --2934780
+where AS_AD_ID = 2921382; --2990636 --2934780
 --AS_NOTE like '%by p 0157728%'
 --AS_OAPD_ID = 94649
 
@@ -105,11 +121,29 @@ select *
 from doctor_info
 where DOC_ID = 353
 
-#### 4th UPDATE ONLINE_APP_PAYMENT_TRANSECTION TABLE WITH SUCCESS STATUS AND CODE ####
+select *
+from appointment_date_mst
+where adm_id = 3910
+
+--#### 4th UPDATE ONLINE_APP_PAYMENT_TRANSECTION TABLE WITH SUCCESS STATUS AND CODE ####
 ---------------------------------------------------------------------------
-UPDATE ONLINE_APP_PAYMENT_TRANSECTION
+
+UPDATE ONLINE_APP_PAY_TRANSACTION
 SET   OAPT_TRANSECTION_RESULT = 'OK',
-     OAPT_TRANSECTION_RESULT_CODE = '000'
-where OAPT_ID = 
-OAPT_OAPM_ID = 
-OAPT_PH_ID = 
+     OAPT_TRANSECTION_RESULT_CODE = '000',
+     OAPT_TRANSECTION_RESULT_DATE = sysdate,
+     OAPT_TRANSECTION_APPROVE_CODE = '715644',
+     OAPT_TRANSECTION_RESULT_PRN = '606705163611',
+     OAPT_TRANSECTION_RESULT_DESC = '149719',
+     OAPT_TRANSECTION_CARD_NUMBER = '012000******3610',
+     OAPT_TRANSECTION_CARD_USER = 'GOLAM MURSHED'
+where OAPT_ID = 61412
+and OAPT_OAPM_ID = 49719
+and OAPT_PH_ID = 279947;
+
+
+select *
+from ONLINE_APP_PAY_TRANSACTION
+where OAPT_ID = 61412
+and OAPT_OAPM_ID = 49719
+and OAPT_PH_ID = 279947;
